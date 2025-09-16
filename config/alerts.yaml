@@ -1,0 +1,18 @@
+# Alerts & notifications
+telegram:
+  enabled: false
+  parse_mode: "Markdown"
+  broadcast_on:
+    - trade_executed
+    - trade_failed
+    - risk_rejected
+    - health_alarm
+email:
+  enabled: false
+  smtp_host: null
+  smtp_port: 587
+  username: null
+  password: null
+webhooks:
+  enabled: false
+  endpoints: []

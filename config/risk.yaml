@@ -1,0 +1,6 @@
+# Risk management
+risk_percent_per_trade: 1.0       # درصد ریسک از اکوئیتی برای هر معامله
+min_sl_pips: 50                   # حداقل فاصله حدضرر
+min_rr: 1.5                       # حداقل نسبت ریسک/ریوارد
+max_open_positions: 3
+slippage_points: 10

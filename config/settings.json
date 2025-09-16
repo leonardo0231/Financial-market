@@ -1,0 +1,260 @@
+{
+  "mt5": {
+      "login": "${MT5_LOGIN}",
+      "password": "${MT5_PASSWORD}",
+      "server": "${MT5_SERVER}",
+      "timeout": 30000,
+      "retries": 3,
+      "_credentials_note": "Credentials loaded from environment variables or Docker secrets"
+  },
+  "trading": {
+      "symbols": {
+          "primary": "XAUUSD",
+          "correlated": {
+              "DXY": {
+                  "symbol": "US30_USD",
+                  "correlation": -0.85,
+                  "weight": 0.25,
+                  "priority": 1
+              },
+              "EURUSD": {
+                  "symbol": "EUR_USD", 
+                  "correlation": 0.72,
+                  "weight": 0.20,
+                  "priority": 2
+              },
+              "GBPUSD": {
+                  "symbol": "GBP_USD",
+                  "correlation": 0.68,
+                  "weight": 0.15,
+                  "priority": 3
+              },
+              "XAGUSD": {
+                  "symbol": "XAG_USD",
+                  "correlation": 0.78,
+                  "weight": 0.20,
+                  "priority": 2
+              },
+              "WTI": {
+                  "symbol": "BCO_USD",
+                  "correlation": 0.45,
+                  "weight": 0.10,
+                  "priority": 4
+              },
+              "USDJPY": {
+                  "symbol": "USD_JPY",
+                  "correlation": -0.62,
+                  "weight": 0.10,
+                  "priority": 4
+              }
+          }
+      },
+      "multi_symbol_analysis": {
+          "enabled": true,
+          "correlation_threshold": 0.6,
+          "max_concurrent_symbols": 7,
+          "analysis_interval": 300,
+          "priority_based_requests": true
+      },
+      "default_timeframe": "M5",
+      "max_positions": "${MAX_POSITIONS}",
+      "default_risk_percent": 1.0,
+      "max_risk_percent": 2.0,
+      "min_risk_reward": 1.5,
+      "magic_number": 234000,
+      "allowed_timeframes": ["M1", "M5", "M15", "M30", "H1", "H4", "D1"],
+      "timeframe_configs": {
+          "M1": {
+              "enabled": false,
+              "strategy": "scalping",
+              "risk_percent": 0.5,
+              "max_positions": 1,
+              "stop_loss_atr_multiplier": 1.5,
+              "take_profit_atr_multiplier": 2.0,
+              "min_profit_points": 5,
+              "trading_sessions": ["london", "ny"]
+          },
+          "M5": {
+              "enabled": true,
+              "strategy": "all",
+              "risk_percent": 1.0,
+              "max_positions": 2,
+              "stop_loss_atr_multiplier": 2.0,
+              "take_profit_atr_multiplier": 3.0,
+              "min_profit_points": 10,
+              "trading_sessions": ["asian", "london", "ny"]
+          },
+          "M15": {
+              "enabled": true,
+              "strategy": "al_brooks,linda_raschke",
+              "risk_percent": 1.5,
+              "max_positions": 3,
+              "stop_loss_atr_multiplier": 2.5,
+              "take_profit_atr_multiplier": 4.0,
+              "min_profit_points": 20,
+              "trading_sessions": ["london", "ny"]
+          },
+          "M30": {
+              "enabled": false,
+              "strategy": "ict",
+              "risk_percent": 2.0,
+              "max_positions": 2,
+              "stop_loss_atr_multiplier": 3.0,
+              "take_profit_atr_multiplier": 5.0,
+              "min_profit_points": 30,
+              "trading_sessions": ["london", "ny"]
+          },
+          "H1": {
+              "enabled": true,
+              "strategy": "ict,al_brooks",
+              "risk_percent": 2.0,
+              "max_positions": 3,
+              "stop_loss_atr_multiplier": 3.5,
+              "take_profit_atr_multiplier": 6.0,
+              "min_profit_points": 50,
+              "trading_sessions": ["london", "ny"]
+          },
+          "H4": {
+              "enabled": true,
+              "strategy": "all",
+              "risk_percent": 1.5,
+              "max_positions": 2,
+              "stop_loss_atr_multiplier": 4.0,
+              "take_profit_atr_multiplier": 8.0,
+              "min_profit_points": 100,
+              "trading_sessions": ["london", "ny"]
+          },
+          "D1": {
+              "enabled": false,
+              "strategy": "all",
+              "risk_percent": 3.0,
+              "max_positions": 1,
+              "stop_loss_atr_multiplier": 5.0,
+              "take_profit_atr_multiplier": 10.0,
+              "min_profit_points": 200,
+              "trading_sessions": ["london"]
+          }
+      },
+      "max_slippage": 20,
+      "max_spread": 50,
+      "trading_hours": {
+          "start": "00:00",
+          "end": "23:59",
+          "timezone": "UTC"
+      }
+  },
+  "telegram": {
+      "bot_token": "${TELEGRAM_TOKEN}",
+      "bot_username": "${TELEGRAM_BOT_USERNAME}",
+      "admin_chat_ids": "${TELEGRAM_CHAT_IDS}",
+      "notification_level": "INFO",
+      "command_timeout": 30,
+      "max_message_length": 4000,
+      "decision_modes": {
+          "automatic": {
+              "enabled": true,
+              "require_confirmation": false,
+              "auto_execute": true
+          },
+          "semi_automatic": {
+              "enabled": true,
+              "require_confirmation": true,
+              "timeout_seconds": 300
+          },
+          "advisory": {
+              "enabled": true,
+              "provide_analysis_only": true,
+              "no_auto_execute": true
+          },
+          "manual_with_ai": {
+              "enabled": true,
+              "provide_alerts": true,
+              "assist_execution": true
+          }
+      },
+      "_credentials_note": "Token loaded from environment variables"
+  },
+  "api": {
+      "finnhub_key": "${FINNHUB_API_KEY}",
+      "claude_api_key": "${CLAUDE_API_KEY}",
+      "gpt4_api_key": "${OPENAI_API_KEY}",
+      "oanda": {
+          "api_key": "${OANDA_API_KEY}",
+          "base_url": "https://api-fxpractice.oanda.com",
+          "rate_limit": {
+              "requests_per_minute": 150,
+              "burst_allowance": 10,
+              "retry_delay": 1
+          }
+      },
+      "rate_limits": {
+          "analyze_market": 60,
+          "execute_trade": 10,
+          "get_data": 120,
+          "oanda_requests": 150
+      }
+  },
+  "data_sources": {
+      "primary": "mt5",
+      "backup": ["finnhub", "yahoo"],
+      "news_sources": [
+          "https://www.investing.com/",
+          "https://www.forexfactory.com/"
+      ]
+  },
+  "logging": {
+      "level": "INFO",
+      "file": "logs/trading.log",
+      "max_size": "10MB",
+      "backup_count": 5,
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+      "console_output": true,
+      "file_output": true
+  },
+  "performance": {
+      "track_metrics": true,
+      "report_interval": "daily",
+      "metrics_to_track": [
+          "win_rate",
+          "profit_factor",
+          "sharpe_ratio",
+          "max_drawdown",
+          "average_win",
+          "average_loss",
+          "total_trades",
+          "consecutive_wins",
+          "consecutive_losses"
+      ],
+      "save_to_database": true,
+      "export_reports": true
+  },
+  "risk_management": {
+      "max_daily_loss": 5.0,
+      "max_weekly_loss": 10.0,
+      "max_monthly_loss": 20.0,
+      "max_drawdown": 15.0,
+      "position_correlation_limit": 0.7,
+      "emergency_stop": {
+          "enabled": true,
+          "loss_threshold": 10.0,
+          "time_window": "1D"
+      }
+  },
+  "system": {
+      "auto_restart": true,
+      "health_check_interval": 60,
+      "data_backup_interval": 3600,
+      "maintenance_window": {
+          "start": "03:00",
+          "end": "04:00",
+          "timezone": "UTC"
+      }
+  },
+  "alerts": {
+      "price_alerts": true,
+      "system_alerts": true,
+      "trade_alerts": true,
+      "alert_channels": ["telegram", "email"],
+      "priority_levels": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+  }
+}

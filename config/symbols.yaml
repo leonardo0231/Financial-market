@@ -1,0 +1,11 @@
+# Symbols config
+default: "XAUUSD"
+items:
+  XAUUSD:
+    enabled: true
+    timeframe: M5
+    bars: 100
+    trading_hours:
+      start: "00:05"
+      end:   "23:55"
+    cooldown_seconds_after_trade: 15

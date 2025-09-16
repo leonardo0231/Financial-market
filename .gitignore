@@ -1,0 +1,6 @@
+LOGGING_README.md
+trading-bot-architecture.md
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

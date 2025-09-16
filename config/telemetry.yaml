@@ -1,0 +1,11 @@
+# Telemetry / Metrics
+prometheus:
+  enabled: true
+  port: 8000
+sentry:
+  enabled: false
+  dsn: null
+  traces_sample_rate: 0.0
+health:
+  enable_liveness: true
+  enable_readiness: true

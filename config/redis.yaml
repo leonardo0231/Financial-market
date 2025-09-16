@@ -1,0 +1,7 @@
+# Redis config
+host: localhost
+port: 6379
+db: 0
+socket_timeout: 2
+retry_on_timeout: true
+health_check_interval: 30

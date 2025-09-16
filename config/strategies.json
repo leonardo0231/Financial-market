@@ -1,0 +1,167 @@
+{
+    "version": "1.0.0",
+    "enabled": ["al_brooks", "linda_raschke", "ict"],
+    "weights": {
+        "al_brooks": 1.0,
+        "linda_raschke": 1.0,
+        "ict": 1.0
+    },
+    "combination_mode": "weighted",
+    "signal_threshold": 0.7,
+    "confidence_levels": {
+        "low": 0.5,
+        "medium": 0.7,
+        "high": 0.8
+    },
+    "parameters": {
+        "al_brooks": {
+            "min_trend_strength": 0.6,
+            "pullback_depth": 0.5,
+            "breakout_confirmation": 2,
+            "bar_analysis_window": 20,
+            "trend_bar_threshold": 0.7,
+            "risk_reward_ratio": 2.0,
+            "reversal_bar_lookback": 3,
+            "failed_breakout_bars": 5,
+            "trend_continuation_threshold": 0.75,
+            "range_detection_window": 20,
+            "volatility_threshold": 0.5,
+            "patterns": {
+                "two_bar_reversal": {
+                    "enabled": true,
+                    "weight": 0.8
+                },
+                "failed_breakout": {
+                    "enabled": true,
+                    "weight": 0.9
+                },
+                "trading_range": {
+                    "enabled": true,
+                    "weight": 0.7
+                }
+            }
+        },
+        "linda_raschke": {
+            "turtle_soup_lookback": 20,
+            "holy_grail_adx_threshold": 30,
+            "holy_grail_adx_retracement": 20,
+            "80_20_threshold": 0.8,
+            "momentum_period": 10,
+            "volatility_expansion_factor": 1.5,
+            "keltner_period": 20,
+            "keltner_multiplier": 2.0,
+            "momentum_pinball_bars": 5,
+            "triangle_breakout_confirmation": 2,
+            "patterns": {
+                "turtle_soup": {
+                    "enabled": true,
+                    "weight": 0.85,
+                    "lookback_period": 20
+                },
+                "holy_grail": {
+                    "enabled": true,
+                    "weight": 0.9,
+                    "adx_threshold": 30,
+                    "retracement_level": 20
+                },
+                "80_20": {
+                    "enabled": true,
+                    "weight": 0.75,
+                    "threshold": 0.8
+                },
+                "momentum_pinball": {
+                    "enabled": true,
+                    "weight": 0.8,
+                    "bars_required": 5
+                },
+                "three_bar_triangle": {
+                    "enabled": true,
+                    "weight": 0.7,
+                    "breakout_factor": 1.2
+                }
+            }
+        },
+        "ict": {
+            "liquidity_lookback": 20,
+            "order_block_strength": 0.7,
+            "fvg_min_size": 0.5,
+            "market_structure_lookback": 50,
+            "optimal_trade_entry": [0.62, 0.705, 0.79],
+            "risk_reward_min": 2.0,
+            "session_times": {
+                "asian": {"start": "00:00", "end": "09:00"},
+                "london": {"start": "08:00", "end": "17:00"},
+                "ny": {"start": "13:00", "end": "22:00"}
+            },
+            "concepts": {
+                "liquidity_zones": {
+                    "enabled": true,
+                    "weight": 0.8,
+                    "lookback": 20,
+                    "min_touches": 2
+                },
+                "order_blocks": {
+                    "enabled": true,
+                    "weight": 0.9,
+                    "strength_threshold": 0.7,
+                    "confirmation_bars": 1
+                },
+                "fair_value_gaps": {
+                    "enabled": true,
+                    "weight": 0.75,
+                    "min_size_atr": 0.5,
+                    "max_age_bars": 50
+                },
+                "market_structure_shift": {
+                    "enabled": true,
+                    "weight": 0.95,
+                    "confirmation_bars": 2
+                },
+                "optimal_trade_entry": {
+                    "enabled": true,
+                    "weight": 0.85,
+                    "fib_levels": [0.62, 0.705, 0.79]
+                }
+            },
+            "session_weights": {
+                "asian": 0.6,
+                "london": 1.0,
+                "ny": 0.9
+            }
+        }
+    },
+    "risk_settings": {
+        "max_risk_per_trade": 2.0,
+        "position_sizing_method": "fixed_risk",
+        "kelly_fraction": 0.25,
+        "max_correlation": 0.7,
+        "stop_loss_methods": ["atr", "support_resistance", "percentage"],
+        "take_profit_methods": ["risk_reward", "resistance", "fibonacci"]
+    },
+    "filtering": {
+        "time_filters": {
+            "avoid_news": true,
+            "major_sessions_only": false,
+            "weekend_trading": false
+        },
+        "market_condition_filters": {
+            "min_volatility": 0.3,
+            "max_volatility": 3.0,
+            "avoid_low_liquidity": true,
+            "trend_strength_threshold": 0.5
+        },
+        "technical_filters": {
+            "rsi_overbought": 80,
+            "rsi_oversold": 20,
+            "atr_min": 0.5,
+            "volume_threshold": 0.8
+        }
+    },
+    "optimization": {
+        "auto_parameter_tuning": false,
+        "performance_tracking": true,
+        "adaptive_weights": false,
+        "learning_rate": 0.1,
+        "lookback_period": 100
+    }
+}

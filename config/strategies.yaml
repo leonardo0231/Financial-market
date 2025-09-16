@@ -1,0 +1,17 @@
+# Strategies configuration
+enabled: ["al_brooks", "linda_raschke", "ict_smc"]  # یا ["all"]
+al_brooks:
+  min_strength: 0.6
+  lookback: 120
+linda_raschke:
+  min_strength: 0.6
+  lookback: 120
+ict_smc:
+  min_strength: 0.6
+  lookback: 150
+ensemble:
+  voting: "majority"   # majority | weighted
+  weights:
+    al_brooks: 1.0
+    linda_raschke: 1.0
+    ict_smc: 1.0

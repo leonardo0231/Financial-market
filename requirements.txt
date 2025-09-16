@@ -1,0 +1,45 @@
+# --- Web & API ---
+Flask==3.0.3
+Flask-Cors==4.0.1
+
+# --- Core Trading Stack ---
+MetaTrader5==5.0.4682
+pandas==2.2.2
+numpy==1.26.4
+scipy==1.16.2
+pandas-ta==0.4.67b0
+
+# --- Persistence & ORM ---
+SQLAlchemy==2.0.32
+psycopg2-binary==2.9.10
+
+# --- Messaging / Cache / HTTP ---
+redis==5.0.4
+requests==2.32.3
+
+# --- Config / Validation ---
+pydantic==1.10.13
+python-dotenv==1.0.1
+PyYAML==6.0.2
+
+# --- Observability ---
+prometheus-client==0.20.0
+sentry-sdk==2.10.0
+
+# --- Parsing / Utils ---
+beautifulsoup4==4.12.3
+lxml==6.0.1
+ujson==5.10.0
+
+# --- Optional AI Providers ---
+openai==1.107.2
+anthropic>=0.67.0
+
+# --- Testing ---
+pytest==8.3.2
+jsonschema==4.23.0
+
+APScheduler==3.11.0
+python-telegram-bot==22.4
+uvicorn==0.34.0
+alembic==1.16.5

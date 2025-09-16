@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "detailed": {
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s - %(message)s",
+      "datefmt": "%Y-%m-%d %H:%M:%S"
+    },
+    "simple": {
+      "format": "%(asctime)s - %(levelname)s - %(message)s",
+      "datefmt": "%H:%M:%S"
+    },
+    "json": {
+      "format": "{\"timestamp\": \"%(asctime)s\", \"logger\": \"%(name)s\", \"level\": \"%(levelname)s\", \"file\": \"%(filename)s\", \"line\": %(lineno)d, \"function\": \"%(funcName)s\", \"message\": \"%(message)s\"}",
+      "datefmt": "%Y-%m-%d %H:%M:%S"
+    },
+    "trading": {
+      "format": "%(asctime)s | %(levelname)-8s | %(name)-20s | %(message)s",
+      "datefmt": "%Y-%m-%d %H:%M:%S"
+    }
+  },
+  "handlers": {
+    "console": {
+      "class": "logging.StreamHandler",
+      "level": "INFO",
+      "formatter": "simple",
+      "stream": "ext://sys.stdout"
+    },
+    "file": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "level": "DEBUG",
+      "formatter": "detailed",
+      "filename": "logs/trading.log",
+      "maxBytes": 10485760,
+      "backupCount": 5,
+      "encoding": "utf-8"
+    },
+    "error_file": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "level": "ERROR",
+      "formatter": "detailed",
+      "filename": "logs/errors.log",
+      "maxBytes": 10485760,
+      "backupCount": 3,
+      "encoding": "utf-8"
+    },
+    "trading_file": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "level": "INFO",
+      "formatter": "trading",
+      "filename": "logs/trading_signals.log",
+      "maxBytes": 5242880,
+      "backupCount": 10,
+      "encoding": "utf-8"
+    },
+    "json_file": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "level": "DEBUG",
+      "formatter": "json",
+      "filename": "logs/trading_bot.json",
+      "maxBytes": 10485760,
+      "backupCount": 3,
+      "encoding": "utf-8"
+    }
+  },
+  "loggers": {
+    "": {
+      "level": "DEBUG",
+      "handlers": ["console", "file", "error_file"],
+      "propagate": false
+    },
+    "trading_bot": {
+      "level": "DEBUG",
+      "handlers": ["console", "file", "trading_file", "json_file"],
+      "propagate": false
+    },
+    "trading_signals": {
+      "level": "INFO",
+      "handlers": ["trading_file", "json_file"],
+      "propagate": false
+    },
+    "database": {
+      "level": "WARNING",
+      "handlers": ["file", "error_file"],
+      "propagate": false
+    },
+    "mt5": {
+      "level": "INFO",
+      "handlers": ["file", "trading_file"],
+      "propagate": false
+    },
+    "strategies": {
+      "level": "DEBUG",
+      "handlers": ["file", "trading_file"],
+      "propagate": false
+    },
+    "risk": {
+      "level": "INFO",
+      "handlers": ["file", "trading_file", "error_file"],
+      "propagate": false
+    },
+    "api": {
+      "level": "INFO",
+      "handlers": ["file", "json_file"],
+      "propagate": false
+    },
+    "telegram": {
+      "level": "INFO",
+      "handlers": ["file", "trading_file"],
+      "propagate": false
+    }
+  }
+}
+

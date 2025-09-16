@@ -1,0 +1,11 @@
+database.# Database config
+driver: postgresql
+host: localhost
+port: 5432
+user: trading_bot
+password: supersecret
+database: trading_db
+pool_size: 10
+pool_timeout: 30
+pool_recycle_seconds: 120
+echo_sql: false

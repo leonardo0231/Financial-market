@@ -1,0 +1,11 @@
+# MetaTrader 5 connector
+auto_connect: true
+login: null          # در صورت نیاز مقدار بده یا از ENV بخوان
+password: null
+server: null
+terminal_path: null  # مسیر ترمینال؛ اگر خالی باشد از پیش‌فرض سیستم استفاده می‌شود
+timeout_seconds: 10
+symbol_settings:
+  XAUUSD:
+    pip_value_per_lot: 1.0   # مقدار تقریبی؛ بهتر است از MT5 خوانده شود
+    digits: 2

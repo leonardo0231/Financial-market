@@ -1,0 +1,10 @@
+# Orchestrator schedules
+market_analysis:
+  enabled: true
+  interval_seconds: 300     # هر 5 دقیقه
+telegram_poll:
+  enabled: false            # اگر webhook داری می‌تونی false بگذاری
+  interval_seconds: 60
+maintenance:
+  enabled: true
+  interval_seconds: 3600    # هر یک ساعت، کارهای خانه‌تکانی (log rotate, cache prune, ...)
