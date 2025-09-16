@@ -1,37 +1,19 @@
-from __future__ import annotations
-from apscheduler.schedulers.background import BackgroundScheduler
-from flask import current_app
-from .config import OrchestratorConfig
-from .workflow import run_market_analysis_job
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+from .settings import settings
+from .workflows.market_analysis import run_market_analysis_job
+from .workflows.telegram_commands import poll_and_process_commands
 
-_scheduler: BackgroundScheduler | None = None
+scheduler = AsyncIOScheduler()
 
-def start_scheduler(app) -> None:
-    global _scheduler
-    cfg = OrchestratorConfig()
-    if not cfg.enabled:
-        app.logger.info("Python Orchestrator disabled via env.")
-        return
-
-    if _scheduler is not None and _scheduler.running:
-        app.logger.info("Orchestrator scheduler already running.")
-        return
-
-    _scheduler = BackgroundScheduler(timezone="UTC")
-    _scheduler.add_job(
+def start_scheduler():
+    scheduler.add_job(
         run_market_analysis_job,
-        "interval",
-        seconds=cfg.interval_seconds,
+        CronTrigger(minute=f"*/{settings.MARKET_ANALYSIS_CRON_MINUTES}"),
         id="market_analysis_job",
-        replace_existing=True,
-        kwargs={"cfg": cfg},
-        max_instances=1,
-        coalesce=True,
-        misfire_grace_time=60,
+        replace_existing=True
     )
-    _scheduler.start()
-    app.logger.info("Python Orchestrator scheduler started (interval=%ss)", cfg.interval_seconds)
-
-def get_scheduler():
-    """Get the current scheduler instance."""
-    return _scheduler
+    # Optional: Telegram command polling
+    if settings.TELEGRAM_POLLING_ENABLED:
+        scheduler.add_job(poll_and_process_commands, 'interval', minutes=1, id='telegram_poll', replace_existing=True)
+    scheduler.start()

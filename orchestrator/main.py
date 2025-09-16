@@ -1,32 +1,43 @@
-import os
-from flask import Flask
+import json
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from .settings import settings
 from .scheduler import start_scheduler
-from .api import orchestrator_bp
+from .workflows.market_analysis import router as market_router
+from .workflows.signal_generator import router as signal_router
+from .workflows.risk_manager import router as risk_router
+from .workflows.trade_executor import router as exec_router
+from .workflows.telegram_controller import router as telegram_router
+from .security import compute_signature
 
-def create_app():
-    """Create and configure the Flask application."""
-    app = Flask(__name__)
-    
-    # Configure logging
-    app.logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
-    
-    # Register the orchestrator blueprint
-    app.register_blueprint(orchestrator_bp)
-    
-    # Start the scheduler with the app context
-    with app.app_context():
-        start_scheduler(app)
-    
-    return app
+app = FastAPI(title="n8n-Python Orchestrator", version="0.1.0")
 
-def main():
-    app = create_app()
-    
-    host = os.getenv("ORCH_HOST", "0.0.0.0")
-    port = int(os.getenv("ORCH_PORT", "5678"))
-    
-    app.logger.info(f"Starting Orchestrator on {host}:{port}")
-    app.run(host=host, port=port, debug=False)
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"] if settings.ALLOWED_ORIGINS == "*" else settings.ALLOWED_ORIGINS.split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-if __name__ == "__main__":
-    main()
+# Routers (webhook endpoints)
+app.include_router(signal_router)
+app.include_router(risk_router)
+app.include_router(exec_router)
+app.include_router(telegram_router)
+
+@app.on_event("startup")
+async def on_startup():
+    # Start scheduled Market Analysis job
+    start_scheduler()
+
+@app.get("/api/health")
+async def health():
+    return {"status": "ok", "orchestrator": "running"}
+
+# Utility endpoint to compute HMAC for clients (e.g., internal scheduler)
+@app.post("/api/sign")
+async def sign(request: Request):
+    body = await request.body()
+    return {"signature": compute_signature(body)}
