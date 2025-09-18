@@ -9,10 +9,11 @@ import signal
 import threading
 import logging
 import requests
+import pandas as pd
 
 from logging.handlers import RotatingFileHandler
 from functools import wraps
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List, Tuple, cast
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -204,12 +205,40 @@ def api_analyze():
     payload = request.get_json(silent=True) or {}
     symbol    = payload.get("symbol", "XAUUSD")
     timeframe = payload.get("timeframe", "M5")
+    bars      = int(payload.get("bars", 100))
     candles   = payload.get("candles")
 
+    if candles is None:
+        candles = BOT.get_market_data(symbol=symbol, timeframe=timeframe)
+    df= pd.DataFrame(candles)
+    if "time" in df.columns:
+        df = df.sort_values("time").reset_index(drop=True)
+    if "atr" in df.columns:
+        high = df["high"].astype(float); low = df["low"].astype("float"); close = df["close"].astype("float")
+        prev_close = close.shift(1)
+        tr = pd.concat([(high - low).abs(), (high - prev_close).abs(), (low - prev_close).abs()], axis=1).max(axis=1)
+        df["atr"] = tr.rolling(14, min_periods=1).mean()
+    
+    strategies = payload.get("strategies", "all")
+    if strategies == "all":
+        requested = ["all"]
+    elif isinstance(strategies, str):
+        requested = [s.strip() for s in strategies.split(",") if s.strip()]
+    else:
+        requested = strategies
+
+    bot_ref = BOT
+
+    if not bot_ref or not getattr(bot_ref, "_initialized", False):
+        return jsonify({"success": False, "error": "bot not initialized"}), 503
+
+    if bot_ref.strategy_manager is None:
+        return jsonify({"success": False, "error": "strategy_manager is None"}), 500
+
+    sm = cast(StrategyManager, bot_ref.strategy_manager)
+
     try:
-        result = BOT.strategy_manager.analyze_market(
-            symbol=symbol, timeframe=timeframe, candles=candles
-        )
+        result = sm.analyze(df=df, requested_strategies=requested)
         return jsonify(result or {"success": False, "error": "no result"})
     except Exception as e:
         LOGGER.error(f"/api/analyze error: {e}", exc_info=True)
@@ -257,7 +286,7 @@ def api_execute_trade():
 # Prometheus
 # ---------------------------
 def setup_prometheus() -> Optional[Dict[str, Any]]:
-    enabled = os.getenv("PROMETHEUS_ENABLED", "0").lower() in ("1", "true", "yse", "on")
+    enabled = os.getenv("PROMETHEUS_ENABLED", "0").lower() in ("1", "true", "yes", "on")
     if not enabled:
         return None
     try:
@@ -388,7 +417,7 @@ def _build_urls() -> Tuple[List[str], List[str], List[str]]:
     ]
 
     bot_triplets = [
-        (method, f"http://{h}:{port}:{path}", desc) 
+        (method, f"http://{h}:{port}{path}", desc) 
         for h in hostnames
         for (method, path, desc) in endpoints
     ]
@@ -520,7 +549,7 @@ def main() -> int:
         return 1
     finally:
         if BOT:
-            BOT.shutdown
+            BOT.shutdown()
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, _signal_handler)

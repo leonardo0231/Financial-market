@@ -116,7 +116,7 @@ class StrategyManager:
         except Exception as e:
             logger.error(f"Failed to create default config: {str(e)}")
     
-    def analyze(self, df: pd.DataFrame, requested_strategies: List[str] = None) -> Dict:
+    def analyze(self, df: pd.DataFrame, requested_strategies: List[str]) -> Dict:
         """Analyze market with specified strategies"""
         try:
             # Determine which strategies to use

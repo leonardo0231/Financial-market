@@ -91,12 +91,18 @@ class MT5Connector:
         'D1': mt5.TIMEFRAME_D1
     }
 
-    def __init__(self, login: int = None, password: str = None, server: str = None, cache_manager: Optional[CacheManager] = None):
+    def __init__(self, login: int, password: str, server: str, cache_manager: Optional[CacheManager] = None):
         """Initialize MT5 connector with advanced concurrency control and caching"""
         # Load configuration from YAML file or environment variables
         config = self._load_mt5_config()
         
-        self.login = int(os.getenv("MT5_LOGIN"))
+        raw_login = os.getenv("MT5_LOGIN", "")
+
+        try:
+            self.login = int(str(raw_login).strip()) if raw_login else None
+        except ValueError:
+            self.login = None
+        
         self.password = os.getenv("MT5_PASSWORD")
         self.server = os.getenv("MT5_SERVER")
         self.terminal_path = config.get('terminal_path') or os.getenv('MT5_TERMINAL_PATH')
@@ -558,12 +564,13 @@ class MT5Connector:
                 except Exception as margin_error:
                     logger.warning(f"Margin calculation failed: {margin_error}. Proceeding with order...")
                 
+                order_type_mt5 = mt5.ORDER_TYPE_BUY if order_type == 'BUY' else mt5.ORDER_TYPE_SELL
                 # Prepare order request
                 request = {
                     "action": mt5.TRADE_ACTION_DEAL,
                     "symbol": symbol,
                     "volume": volume,
-                    "type": order_type,
+                    "type": order_type_mt5,
                     "price": price,
                     "sl": sl,
                     "tp": tp,
@@ -631,7 +638,7 @@ class MT5Connector:
             logger.error(f"Error checking deadlock status: {e}")
             return {'error': str(e)}
     
-    def get_open_positions(self, symbol: str = None) -> List[Dict]:
+    def get_open_positions(self, symbol: str) -> List[Dict]:
         """Get open positions with improved concurrency"""
         operation_id = f"positions_{symbol or 'all'}_{threading.current_thread().ident}"
         
@@ -726,7 +733,7 @@ class MT5Connector:
             logger.error(f"Error closing position: {str(e)}")
             return {'success': False, 'error': str(e)}
     
-    def modify_position(self, ticket: int, sl: float = None, tp: float = None) -> Dict:
+    def modify_position(self, ticket: int, sl: float, tp: float) -> Dict:
         """Modify position SL/TP"""
         try:
             if not self.is_connected():

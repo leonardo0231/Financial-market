@@ -3,9 +3,9 @@ Flask==3.0.3
 Flask-Cors==4.0.1
 
 # --- Core Trading Stack ---
-MetaTrader5==5.0.4682
+MetaTrader5==5.0.47
 pandas==2.2.2
-numpy==1.26.4
+numpy==2.3.3
 scipy==1.16.2
 pandas-ta==0.4.67b0
 
